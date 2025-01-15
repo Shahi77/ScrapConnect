@@ -1,8 +1,5 @@
-### ScrapConnect
-
-- Reflects the connection between sellers and buyers for scrap pickup services.
-
-A microservice for managing pickup requests between sellers and buyers.
+# ScrapConnect
+## Reflects the connection between sellers and buyers for scrap pickup services.
 
 Features:
 
@@ -16,7 +13,7 @@ Request Creation API:
 - Save this to the database.
 - Notify nearby buyers (within 5 km) via WebSocket.
 
-Buyer Assignment:
+Buyer :
 
 - Publish seller requests to a Kafka queue.
 - A worker consumes the message and assigns the nearest available buyer using Redis (cache for fast lookups).
