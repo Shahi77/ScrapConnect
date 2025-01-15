@@ -1,6 +1,5 @@
-### ScrapConnect
-
-- Reflects the connection between sellers and buyers for scrap pickup services.
+# ScrapConnect
+## Reflects the connection between sellers and buyers for scrap pickup services.
 
 A microservice for managing pickup requests between sellers and buyers.
 
