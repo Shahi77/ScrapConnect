@@ -12,3 +12,45 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
+
+model Seller {
+  id        Int       @id @default(autoincrement())
+  name      String
+  lat       Float
+  lng       Float
+  createdAt DateTime  @default(now()) @map("created_at")
+  requests  Request[] // One-to-many relationship with Request
+
+  @@map("seller")
+}
+
+model Buyer {
+  id           Int       @id @default(autoincrement())
+  name         String
+  lat          Float
+  lng          Float
+  availability Boolean   @default(true) // Availability status
+  createdAt    DateTime  @default(now()) @map("created_at")
+  requests     Request[]
+
+  @@map("buyer")
+}
+
+model Request {
+  id           Int      @id @default(autoincrement())
+  sellerId     Int
+  buyerId      Int? // Nullable, assigned later
+  scrapDetails String // Details about the scrap
+  pickupType   String // Same-day or next-day
+  lat          Float // Seller's latitude
+  lng          Float // Seller's longitude
+  status       String   @default("Pending") // e.g., Pending, Accepted, Rejected
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt
+
+  // Relations
+  seller Seller @relation(fields: [sellerId], references: [id])
+  buyer  Buyer? @relation(fields: [buyerId], references: [id])
+
+  @@map("request")
+}
