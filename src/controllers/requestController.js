@@ -2,7 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 const createRequest = async (req, res) => {
   try {
-    const { sellerId, scrapDetails, pickupType, lat, lng } = req.body();
+    const { sellerId, scrapDetails, pickupType, lat, lng } = req.body;
 
     const newRequest = await prisma.request.create({
       data: {
