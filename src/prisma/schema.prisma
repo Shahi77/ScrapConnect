@@ -23,8 +23,6 @@ model User {
   type           UserType
   id             Int       @id @default(autoincrement())
   name           String
-  lat            Float
-  lng            Float
   createdAt      DateTime  @default(now()) @map("created_at")
   sellerRequests Request[] @relation("SellerRelation") // Requests where the user is the seller
   buyerRequests  Request[] @relation("BuyerRelation") // Requests where the user is the buyer
