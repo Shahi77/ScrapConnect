@@ -14,44 +14,38 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Seller {
-  id        Int       @id @default(autoincrement())
-  name      String
-  lat       Float
-  lng       Float
-  createdAt DateTime  @default(now()) @map("created_at")
-  requests  Request[] // One-to-many relationship with Request
-
-  @@map("seller")
+enum UserType {
+  Seller
+  Buyer
 }
 
-model Buyer {
-  id           Int       @id @default(autoincrement())
-  name         String
-  lat          Float
-  lng          Float
-  availability Boolean   @default(true) // Availability status
-  createdAt    DateTime  @default(now()) @map("created_at")
-  requests     Request[]
+model User {
+  type           UserType
+  id             Int       @id @default(autoincrement())
+  name           String
+  lat            Float
+  lng            Float
+  createdAt      DateTime  @default(now()) @map("created_at")
+  sellerRequests Request[] @relation("SellerRelation") // Requests where the user is the seller
+  buyerRequests  Request[] @relation("BuyerRelation") // Requests where the user is the buyer
 
-  @@map("buyer")
+  @@map("user")
 }
 
 model Request {
   id           Int      @id @default(autoincrement())
   sellerId     Int
-  buyerId      Int? // Nullable, assigned later
-  scrapDetails String // Details about the scrap
-  pickupType   String // Same-day or next-day
-  lat          Float // Seller's latitude
-  lng          Float // Seller's longitude
-  status       String   @default("Pending") // e.g., Pending, Accepted, Rejected
+  buyerId      Int? // Nullable, for unassigned requests
+  scrapDetails String
+  pickupType   String
+  lat          Float
+  lng          Float
   createdAt    DateTime @default(now()) @map("created_at")
   updatedAt    DateTime @updatedAt
 
   // Relations
-  seller Seller @relation(fields: [sellerId], references: [id])
-  buyer  Buyer? @relation(fields: [buyerId], references: [id])
+  seller User  @relation("SellerRelation", fields: [sellerId], references: [id])
+  buyer  User? @relation("BuyerRelation", fields: [buyerId], references: [id])
 
   @@map("request")
 }
