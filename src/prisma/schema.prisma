@@ -23,6 +23,8 @@ model User {
   type           UserType
   id             Int       @id @default(autoincrement())
   name           String
+  email          String    @unique
+  password       String
   createdAt      DateTime  @default(now()) @map("created_at")
   sellerRequests Request[] @relation("SellerRelation") // Requests where the user is the seller
   buyerRequests  Request[] @relation("BuyerRelation") // Requests where the user is the buyer
