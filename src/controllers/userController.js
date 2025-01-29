@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const prisma = new PrismaClient();
 
 const signup = async (req, res) => {
-  const { type, name, email, password } = req.body;
+  const { type, name, email, password, lat, lng } = req.body;
   try {
     //1.Check if user already exists
     const existingUser = await prisma.user.findUnique({ where: { email } });
@@ -26,11 +26,19 @@ const signup = async (req, res) => {
         name,
         email,
         password: hashedPassword,
+        lat,
+        lng,
       },
     });
     return res.status(201).json({
       message: "User registered successfully",
-      user: { id: user.id, name: user.name, email: user.email },
+      user: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        lat: user.lat,
+        lng: user.lng,
+      },
     });
   } catch (error) {
     res.status(500).json({ error: "Signup failed", details: error.message });
@@ -60,7 +68,14 @@ const login = async (req, res) => {
       process.env.JWT_SECRET,
       { expiresIn: process.env.JWT_EXPIRES_IN }
     );
-    res.status(200).json({ message: "Login successful", token });
+
+    //4. Set HTTP-only cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+
+    res.status(200).json({ message: "Login successful" });
   } catch (error) {
     res.status(500).json({ error: "Login failed", details: error.message });
   }
@@ -68,7 +83,9 @@ const login = async (req, res) => {
 
 const logout = async (req, res) => {
   try {
-    res.clearCookie("token");
+    res.clearCookie("token", {
+      httpOnly: true,
+    });
     return res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     res.status(500).json({ error: "Logout failed", details: error.message });
