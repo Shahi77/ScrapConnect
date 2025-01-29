@@ -1,26 +1,36 @@
 # ScrapConnect
-## Reflects the connection between sellers and buyers for scrap pickup services.
+## A platform connecting sellers and buyers for efficient scrap pickup services.
 
-Features:
+User Roles
+- Seller – Creates pickup requests.
+- Buyer – Accepts requests and picks up scrap.
+- Authentication – Secure login via email and password.
 
-Request Creation API:
-
-- Sellers create a pickup request, including:
+Sellers Side:
+- Creates a pickup request with:
   - Seller ID
   - Location (latitude & longitude)
   - Scrap details (type, weight, price range)
   - Pickup type (same-day/next-day)
-- Save this to the database.
+- Saves request to the database.
 - Notify nearby buyers (within 5 km) via WebSocket.
 
-Buyer :
+Buyer Side:
+- Publishes seller requests to a Kafka queue.
+- A worker consumes the message and assigns the nearest available buyer using Redis (fast lookups).
+- Notifies the assigned buyer in real time via WebSocket.
 
-- Publish seller requests to a Kafka queue.
-- A worker consumes the message and assigns the nearest available buyer using Redis (cache for fast lookups).
-- Notify the assigned buyer in real time using WebSocket.
+Request Handling
+- Buyers accept/reject pickup requests via an API.
+- Updates request status in the database.
+- Notifies the seller via WebSocket.
 
-Request Acceptance API:
+### Tech Stack
+Backend: Node.js, Express.js
 
-- Buyers accept/reject the seller's request.
-- Update the request status in the database.
-- Notify the seller via WebSocket.
+Database: PostgreSQL
+
+Queue Processing: Apache Kafka
+
+Real-Time Communication: WebSocket
+
