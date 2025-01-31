@@ -14,15 +14,8 @@ app.use(morgan("dev"));
 
 app.use("/v1", v1Router);
 const PORT = process.env.PORT || 5001;
-const init = async () => {
-  try {
-    server.listen(PORT, () => {
-      console.log(`Server started on port ${PORT}`);
-    });
-  } catch (error) {
-    console.error("Failed to initialize the server:", error);
-    process.exit(1);
-  }
-};
 
-init();
+server.listen(PORT, () => {
+  console.log(`WebSocket server running on ws://localhost:${PORT}`);
+  console.log("Server instance is now listening...");
+});
