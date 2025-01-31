@@ -15,7 +15,7 @@ const createRequest = async (req, res) => {
     //2.Create new request
     const newRequest = await prisma.request.create({
       data: {
-        sellerId: req.user.userId,
+        sellerId: req.user.id,
         scrapDetails,
         pickupType,
         lat,
@@ -29,7 +29,7 @@ const createRequest = async (req, res) => {
       lng,
       scrapDetails,
       pickupType,
-      sellerId: req.user.userId,
+      sellerId: req.user.id,
     });
 
     res.status(201).json({
@@ -37,6 +37,7 @@ const createRequest = async (req, res) => {
       request: newRequest,
     });
   } catch (error) {
+    console.error("Error creating request:", error);
     res
       .status(500)
       .json({ error: "Failed to create request", details: error.message });
