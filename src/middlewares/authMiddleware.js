@@ -4,12 +4,12 @@ const jwt = require("jsonwebtoken");
 const prisma = new PrismaClient();
 
 const verifyToken = async (req, res, next) => {
+  const token = req.cookies.token || req.header("Authorization")?.split(" ")[1]; // Read token from cookie
+  if (!token) {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
   try {
-    const token =
-      req.cookies.token || req.header("Authorization")?.split(" ")[1]; // Read token from cookie
-    if (!token) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await prisma.user.findUnique({
       where: { id: decoded.userId },
