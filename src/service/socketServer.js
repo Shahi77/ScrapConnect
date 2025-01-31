@@ -74,4 +74,4 @@ io.on("connection", async (socket) => {
   }
 });
 
-module.exports = { server, app, io };
+module.exports = { server, app, io, connectedUsers };
